@@ -1,0 +1,286 @@
+openapi: 3.0.3
+info:
+  title: DressCollationService API
+  description: A REST API for managing clothing items and collations for users.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /clothes:
+    get:
+      summary: Retrieve a list of all clothing items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothes'
+    post:
+      summary: Create a new clothing item
+      requestBody:
+        description: Clothing object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clothing'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothing'
+  /clothes/{id}:
+    get:
+      summary: Retrieve a single clothing item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clothing item to retrieve
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothing'
+        '404':
+          description: Not found
+    put:
+      summary: Update an existing clothing item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clothing item to update
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Clothing object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clothing'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothing'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete an existing clothing item by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the clothing item to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No content
+  /collations:
+    get:
+      summary: Retrieve a list of all collations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collations'
+    post:
+      summary: Create a new collation
+      requestBody:
+        description: Collation object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collation'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collation'
+  /collations/{id}:
+    get:
+      summary: Retrieve a single collation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the collation to retrieve
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collation'
+        '404':
+          description: Not found
+    put:
+      summary: Update an existing collation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the collation to update
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Collation object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collation'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collation'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete an existing collation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the collation to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No content
+components:
+  schemas:
+    Season:
+      type: integer
+      minimum: 1
+      maximum: 12
+      description: A number representing a season (1-12).
+    BodyPart:
+      type: string
+      enum:
+        - headgear
+        - top
+        - bottom
+        - footwear
+        - accessory
+      description: The part of the body that a clothing item covers.
+    Tag:
+      type: string
+      description: A tag associated with a clothing item or collation.
+    Picture:
+      type: string
+      format: uri
+      description: A URL for an image associated with a clothing item or collation.
+    Rating:
+      type: integer
+      minimum: 0
+      maximum: 5
+      description: Rating of the clothing item (0-5).
+
+    Clothing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the clothing item.
+        name:
+          type: string
+          description: Name of the clothing item.
+        body_part:
+          $ref: '#/components/schemas/BodyPart'
+          description: The part of the body that the clothing item covers.
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+          description: A list of seasons in which the clothing item is appropriate to wear.
+        pictures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Picture'
+          description: A list of image URLs associated with the clothing item.
+        description:
+          type: string
+          description: Description of the clothing item.
+        rating:
+          $ref: '#/components/schemas/Rating'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          description: A list of tags associated with the clothing item.
+    Collation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the collation.
+        name:
+          type: string
+          description: Name of the collation.
+        clothes:
+          type: array
+          items:
+              $ref: '#/components/schemas/Clothing'
+          description: A list of clothing items in the collation.
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+          description: A list of seasons in which the collation is appropriate to wear.
+        pictures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Picture'
+          description: A list of image URLs associated with the collation.
+        description:
+          type: string
+          description: Description of the collation.
+        rating:
+          $ref: '#/components/schemas/Rating'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          description: A list of tags associated with the collation.
+    Clothes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Clothing'
+      description: A list of clothing items.
+    Collations:
+      type: array
+      items:
+        $ref: '#/components/schemas/Collation'
+      description: A list of collations.
+
