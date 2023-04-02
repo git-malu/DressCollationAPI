@@ -176,6 +176,91 @@ paths:
       responses:
         '204':
           description: No content
+  /folders:
+    get:
+      summary: Retrieve a list of all folders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folders'
+    post:
+      summary: Create a new folder
+      requestBody:
+        description: Folder object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Folder'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+  /folders/{id}:
+    get:
+      summary: Retrieve a single folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the folder to retrieve
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+        '404':
+          description: Not found
+    put:
+      summary: Update an existing folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the folder to update
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Folder object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Folder'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete an existing folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the folder to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No content
 components:
   schemas:
     Season:
@@ -207,6 +292,9 @@ components:
 
     Clothing:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
           type: string
@@ -238,8 +326,17 @@ components:
           items:
             $ref: '#/components/schemas/Tag'
           description: A list of tags associated with the clothing item.
+    Clothes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Clothing'
+      description: A list of clothing items.
+
     Collation:
       type: object
+      required:
+        - id
+        - name
       properties:
         id:
           type: string
@@ -273,14 +370,37 @@ components:
           items:
             $ref: '#/components/schemas/Tag'
           description: A list of tags associated with the collation.
-    Clothes:
-      type: array
-      items:
-        $ref: '#/components/schemas/Clothing'
-      description: A list of clothing items.
     Collations:
       type: array
       items:
         $ref: '#/components/schemas/Collation'
       description: A list of collations.
+
+    Folder:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the folder.
+        name:
+          type: string
+          description: Name of the folder.
+        clothes:
+          $ref: '#/components/schemas/Clothes'
+        collations:
+          $ref: '#/components/schemas/Collations'
+        sub_folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Folder'
+          description: A list of sub-folders in the folder.
+    Folders:
+      type: array
+      items:
+        $ref: '#/components/schemas/Folder'
+      description: A list of folders.
 
